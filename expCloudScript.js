@@ -1,24 +1,28 @@
 <script>
-window.addEventListener("onEmbeddedMessagingReady", () => {
+    var token = null;
+    var uid = null;
     
-    var uid = $A.get("$SObjectType.CurrentUser.Id");
+    window.addEventListener("load", () => {
+        uid = $A.get("$SObjectType.CurrentUser.Id");
+        if (uid != "undefined"){
+            fetch('https://demo331-2a030ea32f33.herokuapp.com/t1?sub=' + $A.get("$SObjectType.CurrentUser.Id"))
+            .then(response => response.text())
+            .then(response => {
+                token = response;
+            })
+            .catch(err => {
+                console.log(err)
+            })
+        }
 
-    if (uid != null){
-        var url = 'https://demo331-2a030ea32f33.herokuapp.com/t1?sub=' + uid;
-        fetch(url)
-        .then(response => response.text())
-        .then(response => {
+    });
+    
+
+    window.addEventListener("onEmbeddedMessagingReady", () => {
+        if (token != null){
             embeddedservice_bootstrap.userVerificationAPI.setIdentityToken({
-            identityTokenType : "JWT", identityToken : response});
-            embeddedservice_bootstrap.prechatAPI.setHiddenPrechatFields({'uid' : uid});
-        })
-        .catch(err => {
-            console.log(err)
-        })
-	}
+       		identityTokenType : "JWT", identityToken : token});
+        }
+    });
  
-});
-
-embeddedservice_bootstrap.init(…)
-
 </script>
