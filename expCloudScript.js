@@ -1,6 +1,4 @@
 <script>
-    uid = null; 
-
     window.addEventListener("onEmbeddedMessagingReady", () => {
         uid = $A.get("$SObjectType.CurrentUser.Id");
 
